@@ -40,8 +40,9 @@
         android:id="@+id/eTmailLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/rounded_et"
         android:ems="10"
-        android:hint="EMAIL"
+        android:hint="@string/email"
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,35 +55,49 @@
         android:id="@+id/eTpasswordLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/rounded_et"
         android:ems="10"
-        android:hint="PASSWORD"
-        android:inputType="numberPassword"
+        android:hint="@string/password"
+        android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.456" />
 
     <Button
         android:id="@+id/btnForgotPassword"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_btn"
         android:layout_marginEnd="56dp"
-        android:text="¿Has olvidado tu contraseña?"
+        android:text="@string/forgotPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.679" />
+        app:layout_constraintVertical_bias="0.647" />
+
+    <Space
+        android:layout_width="305dp"
+        android:layout_height="39dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.595" />
 
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="140dp"
         android:layout_height="50dp"
-        android:backgroundTint="@color/principal"
+        android:background="@drawable/rounded_btn"
         android:text="Login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.796"/>
+        app:layout_constraintVertical_bias="0.543" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

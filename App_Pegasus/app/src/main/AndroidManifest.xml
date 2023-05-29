@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,14 +17,45 @@
         android:theme="@style/Theme.App_Pegasus"
         tools:targetApi="31">
         <activity
-            android:name=".activities.ParentMainActivity"
+            android:name=".activities.children.MapChildrenActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.children.ChildrenMainActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.parent.MapParentActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.parent.ParentMainActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.parent.RegisterParentActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.SelectOptionAuthActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.children.ChildrenMainActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".activities.RegisterActivity"
+            android:name=".activities.parent.ParentMainActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.children.RegisterActivity"
             android:exported="false"
             android:parentActivityName=".activities.SelectOptionAuthActivity">
             <meta-data
@@ -64,6 +98,10 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
     </application>
 
 </manifest>

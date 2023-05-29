@@ -3,6 +3,8 @@ package com.example.app_pegasus.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.app_pegasus.R;
+import com.example.app_pegasus.activities.children.ChildrenMainActivity;
+import com.example.app_pegasus.activities.parent.ParentMainActivity;
 import com.example.app_pegasus.includes.MyToolbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText mEditTextEmail, mEditTextPassword;
 
     Button mButtonLogin;
+
+    SharedPreferences mPreferences;
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
@@ -40,6 +46,9 @@ public class LoginActivity extends AppCompatActivity {
 
         mDatabase = FirebaseDatabase.getInstance("https://app-pegasus-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
         mAuth = FirebaseAuth.getInstance();
+
+        mPreferences = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
+
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,6 +66,17 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+                            String user = mPreferences.getString("user", "");
+                            if (user.equals("parent")) {
+                                Intent intent = new Intent(LoginActivity.this, ParentMainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                            }
+                            else {
+                                Intent intent = new Intent(LoginActivity.this, ChildrenMainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                            }
                             Toast.makeText(LoginActivity.this, "El login se ha realizado con exito", Toast.LENGTH_SHORT).show();
                         } else{
                             Toast.makeText(LoginActivity.this, "El mail o contraseña son incorrectos", Toast.LENGTH_SHORT).show();

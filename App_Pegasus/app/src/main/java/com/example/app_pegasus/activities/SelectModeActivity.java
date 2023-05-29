@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.example.app_pegasus.R;
+import com.example.app_pegasus.activities.children.ChildrenMainActivity;
+import com.example.app_pegasus.activities.parent.ParentMainActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class SelectModeActivity extends AppCompatActivity {
 
@@ -48,6 +51,25 @@ public class SelectModeActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            String user = mPreferences.getString("user", "");
+            if (user.equals("parent")) {
+                Intent intent = new Intent(SelectModeActivity.this, ParentMainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+            else {
+                Intent intent = new Intent(SelectModeActivity.this, ChildrenMainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        }
+    }
+
     private void goToSelectAuth() {
         Intent intent = new Intent( SelectModeActivity.this, SelectOptionAuthActivity.class);
         startActivity(intent);

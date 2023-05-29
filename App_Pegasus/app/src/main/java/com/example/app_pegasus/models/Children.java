@@ -5,11 +5,13 @@ public class Children {
     String id;
     String name;
     String email;
+    String parentEmail;
 
-    public Children(String id, String name, String email) {
+    public Children(String id, String name, String email, String parentEmail) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.parentEmail = parentEmail;
     }
 
     public String getId() {
@@ -34,5 +36,13 @@ public class Children {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getParentEmail() {
+        return parentEmail;
+    }
+
+    public void setParentEmail(String parentEmail) {
+        this.parentEmail = parentEmail;
     }
 }

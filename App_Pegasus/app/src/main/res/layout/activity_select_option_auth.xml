@@ -44,38 +44,43 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/selectOptionAuth"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.429" />
+        app:layout_constraintVertical_bias="0.431" />
 
     <Button
         android:id="@+id/btnGoToLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/principal"
-        android:text="Inicia sesión"
+        android:layout_width="140dp"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_btn"
+        android:text="@string/btnGoToLogin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.692" />
+        app:layout_constraintVertical_bias="0.693" />
+
+
 
     <Button
         android:id="@+id/btnGoToRegister"
         android:layout_width="140dp"
         android:layout_height="50dp"
-        android:backgroundTint="@color/principal"
-        android:text="  Registrate  "
+        android:background="@drawable/rounded_btn"
+        android:text="@string/btnGoToRegister"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.796" />
+        app:layout_constraintVertical_bias="0.823" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
