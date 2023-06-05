@@ -7,12 +7,16 @@ public class Children {
     String email;
     String parentEmail;
 
-    public Children(String id, String name, String email, String parentEmail) {
+    public Children() {
+    }
+
+    public Children(String id, String name, String email) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.parentEmail = parentEmail;
     }
+
 
     public String getId() {
         return id;

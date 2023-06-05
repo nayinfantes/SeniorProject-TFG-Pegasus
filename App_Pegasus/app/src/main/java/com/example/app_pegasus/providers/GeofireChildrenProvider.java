@@ -26,16 +26,6 @@ public class GeofireChildrenProvider {
         locationRef.child("latitude").setValue(latLng.latitude);
         locationRef.child("longitude").setValue(latLng.longitude);
     }
-    /*GeoQuery getActiveChildrenDrivers(LatLng latLng) {
-        String parentEmail= FirebaseDatabase.getInstance("https://app-pegasus-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference().child("Users").child("Children").child(id);
-        GeoQuery geoQuery = mGeofire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude), 10);
-        geoQuery.removeAllListeners();
-        return geoQuery;
-    }
-    public void removeLocation() {
-        DatabaseReference locationRef = mDatabase.child("location");
-        locationRef.removeValue();
-    }*/
+
 }
 

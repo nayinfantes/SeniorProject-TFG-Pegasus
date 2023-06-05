@@ -4,10 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.app_pegasus.R;
@@ -29,10 +33,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     EditText mEditTextName, mEditTextEmail, mEditTextParentEmail, mEditTextPassword, mEditTextConfirmPassword;
 
+    TextView mTextViewGoToRegister;
+
     Button mButtonRegister;
 
     AuthProvider mAuthProvider;
     ChildrenProvider mChildrenProvider;
+
+    SharedPreferences mPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +57,49 @@ public class RegisterActivity extends AppCompatActivity {
         mEditTextEmail = findViewById(R.id.eTmailRegister);
         mEditTextParentEmail = findViewById(R.id.eTmailParentRegister);
         mEditTextPassword = findViewById(R.id.eTpasswordRegister);
+        mEditTextPassword.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2;
+                Drawable visibilityDrawable = mEditTextPassword.getCompoundDrawables()[DRAWABLE_RIGHT];
+
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (mEditTextPassword.getRight() - mEditTextPassword.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        // El usuario hizo clic en el icono de visualización de contraseña
+                        togglePasswordVisibility();
+                        return true;
+                    }
+                }
+                return false;            }
+        });
+
         mEditTextConfirmPassword = findViewById(R.id.eTconfirmPasswordRegister);
+        mEditTextConfirmPassword.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2;
+                Drawable visibilityDrawable = mEditTextConfirmPassword.getCompoundDrawables()[DRAWABLE_RIGHT];
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (mEditTextConfirmPassword.getRight() - mEditTextConfirmPassword.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        // El usuario hizo clic en el icono de visualización de contraseña
+                        toggleConfirmPasswordVisibility();
+                        return true;
+                    }
+                }
+                return false;            }
+        });
+
+        mPreferences = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
+
+        mTextViewGoToRegister = findViewById(R.id.tVGoToRegister);
+        mTextViewGoToRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToRegister();
+            }
+        });
 
         mButtonRegister = findViewById(R.id.btnRegister);
 
@@ -61,6 +111,55 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+    private void toggleConfirmPasswordVisibility() {
+        int selectionStart = mEditTextConfirmPassword.getSelectionStart();
+        int selectionEnd = mEditTextConfirmPassword.getSelectionEnd();
+
+        if (mEditTextConfirmPassword.getTransformationMethod() instanceof PasswordTransformationMethod) {
+            // Cambiar a modo de visualización de contraseña
+            mEditTextConfirmPassword.setTransformationMethod(null);
+            Drawable drawable = getResources().getDrawable(R.drawable.ic_baseline_visibility_24);
+            mEditTextConfirmPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null);
+        } else {
+            // Cambiar a modo oculto de contraseña
+            mEditTextConfirmPassword.setTransformationMethod(new PasswordTransformationMethod());
+            Drawable drawable = getResources().getDrawable(R.drawable.ic_baseline_visibility_off_24);
+            mEditTextConfirmPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null);
+        }
+
+        // Restaurar la selección del cursor
+        mEditTextConfirmPassword.setSelection(selectionStart, selectionEnd);
+    }
+    private void togglePasswordVisibility() {
+        int selectionStart = mEditTextPassword.getSelectionStart();
+        int selectionEnd = mEditTextPassword.getSelectionEnd();
+
+        if (mEditTextPassword.getTransformationMethod() instanceof PasswordTransformationMethod) {
+            // Cambiar a modo de visualización de contraseña
+            mEditTextPassword.setTransformationMethod(null);
+            Drawable drawable = getResources().getDrawable(R.drawable.ic_baseline_visibility_24);
+            mEditTextPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null);
+        } else {
+            // Cambiar a modo oculto de contraseña
+            mEditTextPassword.setTransformationMethod(new PasswordTransformationMethod());
+            Drawable drawable = getResources().getDrawable(R.drawable.ic_baseline_visibility_off_24);
+            mEditTextPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null);
+        }
+
+        // Restaurar la selección del cursor
+        mEditTextPassword.setSelection(selectionStart, selectionEnd);
+    }
+    public void goToRegister() {
+        String typeUser = mPreferences.getString("user", "");
+        if (typeUser.equals("children")) {
+            Intent intent = new Intent(RegisterActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(RegisterActivity.this, RegisterParentActivity.class);
+            startActivity(intent);
+        }
+    }
+
     void clickRegister(){
         final String name = mEditTextName.getText().toString();
         final String email = mEditTextEmail.getText().toString();
@@ -94,7 +193,8 @@ public class RegisterActivity extends AppCompatActivity {
                 if(task.isSuccessful()){
 
                     String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    Children children = new Children(id, name, email, parentEmail);
+                    Children children = new Children(id, name, email);
+                    children.setParentEmail(parentEmail);
                     create(children);
                 }
                 else {

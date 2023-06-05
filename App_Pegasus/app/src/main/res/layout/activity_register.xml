@@ -18,41 +18,48 @@
         android:ems="10"
         android:hint="@string/confirmPassword"
         android:inputType="textPassword"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.657" />
+        app:layout_constraintVertical_bias="0.618"
+        android:drawableRight="@drawable/ic_baseline_visibility_off_24"
+        android:paddingRight="10dp"
+        android:paddingStart="10dp"/>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="122dp"
-        android:text="sus"
-        android:textColor="@color/principal"
-        android:textSize="43sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.102" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="122dp"
-        android:focusableInTouchMode="false"
-        android:text="Pega"
-        android:textColor="@color/grey"
-        android:textSize="43sp"
-        android:textStyle="bold"
+    <LinearLayout
+        android:layout_width="412dp"
+        android:layout_height="140dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.102" />
+        app:layout_constraintVertical_bias="0.002">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="122dp"
+            android:focusableInTouchMode="false"
+            android:layout_gravity="bottom"
+            android:text="Pega"
+            android:textColor="@color/grey"
+            android:textSize="43sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="122dp"
+            android:layout_gravity="bottom"
+            android:text="sus"
+            android:textColor="@color/principal"
+            android:textSize="43sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/imageView2"
@@ -74,26 +81,26 @@
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.51" />
+        app:layout_constraintVertical_bias="0.478"
+        android:paddingStart="10dp"/>
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="260dp"
-        android:layout_height="42dp"
+        android:layout_width="351dp"
+        android:layout_height="66dp"
         android:text="@string/emailParents"
-        android:textSize="15sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.746" />
+        app:layout_constraintVertical_bias="0.712" />
 
     <EditText
         android:id="@+id/eTmailParentRegister"
@@ -103,12 +110,13 @@
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.791" />
+        app:layout_constraintVertical_bias="0.784"
+        android:paddingStart="10dp"/>
 
     <EditText
         android:id="@+id/eTpasswordRegister"
@@ -118,16 +126,19 @@
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPassword"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.583" />
+        app:layout_constraintVertical_bias="0.549"
+        android:drawableRight="@drawable/ic_baseline_visibility_off_24"
+        android:paddingRight="10dp"
+        android:paddingStart="10dp"/>
 
     <Button
         android:id="@+id/btnRegister"
-        android:layout_width="140dp"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:background="@drawable/rounded_btn"
         android:text="@string/btnGoToRegister"
@@ -136,7 +147,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.891" />
+        app:layout_constraintVertical_bias="0.868" />
 
     <EditText
         android:id="@+id/eTnameRegister"
@@ -146,11 +157,44 @@
         android:ems="10"
         android:hint="@string/name"
         android:inputType="textPersonName"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.437" />
+        app:layout_constraintVertical_bias="0.406"
+        android:paddingStart="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="412dp"
+        android:layout_height="76dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginEnd="44dp"
+            android:text="@string/registeredBefore"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tVGoToRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginEnd="44dp"
+            android:text="@string/tVGoToLogin"
+            android:textColor="@color/principal"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

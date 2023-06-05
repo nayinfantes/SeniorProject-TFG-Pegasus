@@ -1,14 +1,14 @@
 <resources>
-    <string name="app_name">App_Pegasus</string>
+    <string name="app_name">Pegasus</string>
     <string name="summary">Pegasus es un control parental potente y fácil de usar que proporciona a los padres las herramientas que necesitan para asegurarse de que sus hijos utilizan sus dispositivos de forma segura.</string>
-    <string name="name">  Nombre</string>
-    <string name="email">  Correo electrónico</string>
+    <string name="name">   Nombre</string>
+    <string name="email">   Correo electrónico</string>
     <string name="name2">Nombre:</string>
     <string name="mail">Email:</string>
     <string name="prueba">Prueba</string>
-    <string name="emailParents">A continuación introduce el correo electrónico de tu padre, madre o tutor:</string>
-    <string name="password">  Contraseña</string>
-    <string name="confirmPassword">  Confirma la contraseña</string>
+    <string name="emailParents">Introduce el email de tu padre, madre o tutor:</string>
+    <string name="password">   Contraseña</string>
+    <string name="confirmPassword">   Confirmar contraseña</string>
     <string name="btnGoToSelectMode">¡EMPEZAR!</string>
     <string name="btnGoToRegister">REGÍSTRATE</string>
     <string name="btnLogout">CERRAR SESIÓN</string>
@@ -16,8 +16,17 @@
     <string name="selectMode">¿Cómo quieres acceder?</string>
     <string name="parentMode">PADRES</string>
     <string name="childrenMode">HIJ@S</string>
-    <string name="selectOptionAuth">Escoge una de las siguientes opciones:</string>
+    <string name="selectOptionAuth">Escoge una opción:</string>
     <string name="forgotPassword">¿Has olvidado tu contraseña?</string>
+    <string name="notRegisteredYet">¿Todavía no tienes cuenta?</string>
+    <string name="registeredBefore">¿Ya tienes cuenta?</string>
+    <string name="recoverPassword">¿Has olvidado tu  </string>
+    <string name="tVGoToRecoverpassword">contraseña</string>
+    <string name="btnRecoverpassword">RECUPERAR CONTRASEÑA</string>
+    <string name="tVRecoverPassword">Introduce tu email y te enviaremos un link para que puedas restaurar tu contraseña.</string>
+    <string name="interrogation">\?</string>
+    <string name="tVGoToRegister">Regístrate</string>
+    <string name="tVGoToLogin">Inicia sesión</string>
     <string name="sendAlertComeFindMe">Ven a buscarme</string>
 
 </resources>

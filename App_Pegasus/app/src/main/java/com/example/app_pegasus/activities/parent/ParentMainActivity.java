@@ -2,21 +2,26 @@ package com.example.app_pegasus.activities.parent;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.app_pegasus.R;
 import com.example.app_pegasus.activities.MainActivity;
+import com.example.app_pegasus.adapters.ChildrenDataAdapter;
 import com.example.app_pegasus.includes.MyToolbar;
+import com.example.app_pegasus.models.Children;
 import com.example.app_pegasus.models.Parent;
 import com.example.app_pegasus.providers.AuthProvider;
+import com.example.app_pegasus.providers.TokenProvider;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,16 +29,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
 public class ParentMainActivity extends AppCompatActivity {
 
     Button mButtonGoToMap;
-    //Button mButtonLogout;
     AuthProvider mAuthProvider;
     String parentEmail;
     DatabaseReference mDatabase;
     TextView mTextParentName, mTextParentEmail;
+    MapParentActivity mapParentActivity;
+    private RecyclerView mRecyclerView;
+    private ChildrenDataAdapter mChildrenDataAdapter;
+    private TokenProvider mTokenProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,26 +50,22 @@ public class ParentMainActivity extends AppCompatActivity {
 
         mAuthProvider = new AuthProvider();
 
-        mDatabase = FirebaseDatabase.getInstance("https://app-pegasus-default-rtdb.europe-west1.firebasedatabase.app/").getReference().child("Users").child("Parent");
+        mDatabase = FirebaseDatabase.getInstance("https://app-pegasus-default-rtdb.europe-west1.firebasedatabase.app/").getReference().child("Users");
 
         parentEmail = mAuthProvider.getUserEmail();
 
+        mapParentActivity= new MapParentActivity();
         mTextParentEmail = findViewById(R.id.showParentEmailParentProfile);
         mTextParentName = findViewById(R.id.showParentNameParentProfile);
 
         getParentData(parentEmail);
 
-       // makeChildrenList();
-       /* mButtonLogout = findViewById(R.id.btnLogout);
-        mButtonLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAuthProvider.logout();
-                Intent intent = new Intent(ParentMainActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });*/
+        mRecyclerView = findViewById(R.id.recyclerViewChildrenGralData);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        mTokenProvider = new TokenProvider();
+        generateToken();
 
        mButtonGoToMap = findViewById(R.id.btnGoToMap);
         mButtonGoToMap.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +76,24 @@ public class ParentMainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Query mQuery = mDatabase.child("Children").orderByChild("parentEmail").equalTo(parentEmail);
+        FirebaseRecyclerOptions<Children> options = new FirebaseRecyclerOptions.Builder<Children>().setQuery(mQuery, Children.class).build();
+        mChildrenDataAdapter = new ChildrenDataAdapter (options, ParentMainActivity.this);
+        mRecyclerView.setAdapter(mChildrenDataAdapter);
+        mChildrenDataAdapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mChildrenDataAdapter.stopListening();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.parent_menu, menu);
@@ -93,6 +113,7 @@ public class ParentMainActivity extends AppCompatActivity {
     }
 
     void logout() {
+        mapParentActivity.disconnect();
         mAuthProvider.logout();
         Intent intent = new Intent(ParentMainActivity.this, MainActivity.class);
         startActivity(intent);
@@ -100,7 +121,7 @@ public class ParentMainActivity extends AppCompatActivity {
     }
 
     public void getParentData(String parentEmail) {
-        Query mQuery = mDatabase.orderByChild("email").equalTo(parentEmail);
+        Query mQuery = mDatabase.child("Parent").orderByChild("email").equalTo(parentEmail);
         mQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -128,7 +149,8 @@ public class ParentMainActivity extends AppCompatActivity {
 
     }
 
-   /* public void makeChildrenList(){
+    void generateToken(){
+        mTokenProvider.create(mAuthProvider.getId());
+    }
 
-    }*/
 }

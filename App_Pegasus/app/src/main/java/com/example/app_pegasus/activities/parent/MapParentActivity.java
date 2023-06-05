@@ -36,6 +36,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapParentActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -51,6 +62,9 @@ public class MapParentActivity extends AppCompatActivity implements OnMapReadyCa
     private AuthProvider mAuthProvider;
     private LatLng mCurrentLatLng;
     private GeofireParentProvider mGeofireParentProvider;
+    DatabaseReference mDatabase;
+    private boolean mIsFirstTime = true;
+    private List<Marker> mPreviousMarkers = new ArrayList<>();
 
     LocationCallback mLocationCallback = new LocationCallback() {
 
@@ -62,16 +76,21 @@ public class MapParentActivity extends AppCompatActivity implements OnMapReadyCa
                     mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
 
-                    // OBTENER LA LOCALIZACION DEL USUARIO EN TIEMPO REAL
+                  /*  // OBTENER LA LOCALIZACION DEL USUARIO EN TIEMPO REAL
                     mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                                     .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                                    .zoom(16f)
+                                    .zoom(12f)
                                     .build()
-                    ));
+                    ));*/
 
                    updateLocation();
-                    /*Log.d("ENTRO", "ACTUALIZANDO POSICION");*/
+                    if (mIsFirstTime) {
+                        mIsFirstTime = false;
+
+                    }else {
+                        removePreviousMarkers();
+                    }showChildrenLocationsOnMap();
                 }
             }
         }
@@ -89,6 +108,8 @@ public class MapParentActivity extends AppCompatActivity implements OnMapReadyCa
 
         mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
 
+        mDatabase = FirebaseDatabase.getInstance("https://app-pegasus-default-rtdb.europe-west1.firebasedatabase.app/").getReference().child("Users").child("Children");
+
         mAuthProvider = new AuthProvider();
 
         mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
@@ -96,7 +117,42 @@ public class MapParentActivity extends AppCompatActivity implements OnMapReadyCa
         mGeofireParentProvider = new GeofireParentProvider();
 
     }
+    private void removePreviousMarkers() {
+        for (Marker marker : mPreviousMarkers) {
+            marker.remove();
+        }
+        mPreviousMarkers.clear();
+    }
+    private void showChildrenLocationsOnMap() {
+        String parentEmail = mAuthProvider.getUserEmail();
+        Query childrenQuery = mDatabase.orderByChild("parentEmail").equalTo(parentEmail);
+        childrenQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    String childrenId = childSnapshot.getKey();
+                    String childrenName = childSnapshot.child("name").getValue(String.class);
+                    Double latitude = childSnapshot.child("location/latitude").getValue(Double.class);
+                    Double longitude = childSnapshot.child("location/longitude").getValue(Double.class);
 
+                    LatLng childLatLng = new LatLng(latitude, longitude);
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(childLatLng)
+                            .title("Ubicación de " +childrenName);
+
+                    // Agregar el marcador al mapa (asumiendo que tienes una instancia de GoogleMap llamada "googleMap")
+                    Marker marker = mMap.addMarker(markerOptions);
+                    mPreviousMarkers.add(marker);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Manejo de errores en caso de que la lectura de datos falle
+
+            }
+        });
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -202,7 +258,15 @@ public class MapParentActivity extends AppCompatActivity implements OnMapReadyCa
             mGeofireParentProvider.saveLocation(mCurrentLatLng);
         }
     }
+    public void disconnect() {
 
+        if (mFusedLocation != null) {
+            mFusedLocation.removeLocationUpdates(mLocationCallback);
+            if (mAuthProvider.existSession()) {
+                mGeofireParentProvider.removeLocation(mAuthProvider.getId());
+            }
+        }
+    }
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
@@ -212,78 +276,16 @@ public class MapParentActivity extends AppCompatActivity implements OnMapReadyCa
             return;
         }
 
-        mLocationRequest = new Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build();
+        mLocationRequest = new Builder(Priority.PRIORITY_HIGH_ACCURACY, 3000).build();
 
         startLocation();
-    }
-
-
-
-    /*
-
-    private TokenProvider mTokenProvider;
-
-    private ValueEventListener mListener;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_driver);
-        MyToolbar.show(this, "Conductor", false);
-
-        mAuthProvider = new AuthProvider();
-        mGeofireParentProvider = new GeofireParentProvider("active_drivers");
-        mTokenProvider = new TokenProvider();
-
-        mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
-
-
-
-        mButtonConnect = findViewById(R.id.btnConnect);
-        mButtonConnect.setOnClickListener(new View.OnClickListener() {
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
-            public void onClick(View view) {
-                if (mIsConnect) {
-                    disconnect();
-                }
-                else {
-                    startLocation();
+            public void onMapLoaded() {
+                if (mCurrentLatLng != null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f));
                 }
             }
         });
-
-        generateToken();
-        isDriverWorking();
-
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mListener != null) {
-            mGeofireParentProvider.isDriverWorking(mAuthProvider.getId()).removeEventListener(mListener);
-        }
-    }
-
-    private void isDriverWorking() {
-        mListener = mGeofireParentProvider.isDriverWorking(mAuthProvider.getId()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    disconnect();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
-
-    void generateToken() {
-        mTokenProvider.create(mAuthProvider.getId());
-    }*/
 }

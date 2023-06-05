@@ -7,9 +7,7 @@ public class Parent {
     String location;
 
 
-    public Parent() {
 
-    }
     public Parent(String id, String name, String email) {
         this.id = id;
         this.name = name;

@@ -10,18 +10,6 @@
         android:id="@+id/include2"
         layout="@layout/action_bar_toolbar"></include>
 
-    <!--<Button
-        android:id="@+id/btnLogout"
-        android:layout_width="186dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="52dp"
-        android:background="@drawable/rounded_btn"
-        android:text="@string/btnLogout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.936" />-->
-
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
@@ -31,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25">
+        app:layout_constraintVertical_bias="0.268">
 
         <View
             android:layout_width="100dp"
@@ -71,8 +59,8 @@
 
 
     <LinearLayout
-        android:layout_width="411dp"
-        android:layout_height="160dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,18 +72,16 @@
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="121dp"
-            android:layout_height="115dp"
+            android:layout_height="121dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_margin="10dp"
             android:backgroundTint="@color/white"
             android:src="@drawable/parents" />
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:orientation="vertical">
 
             <TextView
@@ -104,46 +90,48 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/name2"
-                android:textSize="18sp"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/showParentNameParentProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text=" "
+                android:textSize="15sp"
+                android:textColor="@color/principal"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/mail"
-                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:text="Correo:"
+                android:textSize="15sp"
                 android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp">
-
-            <TextView
-                android:id="@+id/showParentNameParentProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/prueba"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/showParentEmailParentProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/prueba"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="4dp"
+                android:text=" "
+                android:textSize="15sp"
+                android:textColor="@color/principal"
+                android:textStyle="bold"  />
         </LinearLayout>
 
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewChildrenGralData"
+        android:layout_width="405dp"
+        android:layout_height="528dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.823" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

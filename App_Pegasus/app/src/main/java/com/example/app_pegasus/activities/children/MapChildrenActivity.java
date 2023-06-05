@@ -18,13 +18,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.app_pegasus.R;
 import com.example.app_pegasus.activities.parent.MapParentActivity;
 import com.example.app_pegasus.includes.MyToolbar;
+import com.example.app_pegasus.models.FCMBody;
+import com.example.app_pegasus.models.FCMResponse;
 import com.example.app_pegasus.providers.AuthProvider;
 import com.example.app_pegasus.providers.GeofireChildrenProvider;
 import com.example.app_pegasus.providers.GeofireParentProvider;
+import com.example.app_pegasus.providers.NotificationProvider;
+import com.example.app_pegasus.providers.TokenProvider;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -37,6 +45,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MapChildrenActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -53,6 +73,14 @@ public class MapChildrenActivity extends AppCompatActivity implements OnMapReady
     private LatLng mCurrentLatLng;
     private GeofireChildrenProvider mGeofireChildrenProvider;
 
+    Button mButtonFindMe;
+
+    private String parentId;
+    private String childrenName;
+
+    private TokenProvider mTokenProvider;
+    private NotificationProvider mNotificationProvider;
+
     LocationCallback mLocationCallback = new LocationCallback() {
 
         @Override
@@ -63,16 +91,15 @@ public class MapChildrenActivity extends AppCompatActivity implements OnMapReady
                     mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
 
-                    // OBTENER LA LOCALIZACION DEL USUARIO EN TIEMPO REAL
+                 /*   // OBTENER LA LOCALIZACION DEL USUARIO EN TIEMPO REAL
                     mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                                     .target(new LatLng(location.getLatitude(), location.getLongitude()))
                                     .zoom(16f)
                                     .build()
-                    ));
+                    ));*/
 
                     updateLocation();
-                    /*Log.d("ENTRO", "ACTUALIZANDO POSICION");*/
                 }
             }
         }
@@ -83,7 +110,7 @@ public class MapChildrenActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_children_map);
 
-        MyToolbar.show(this, "Mapa", true);
+        MyToolbar.show(this, "Estás aquí", true);
 
         mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mMapFragment.getMapAsync(this);
@@ -95,7 +122,72 @@ public class MapChildrenActivity extends AppCompatActivity implements OnMapReady
         mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
 
         mGeofireChildrenProvider = new GeofireChildrenProvider();
+
+        mTokenProvider = new TokenProvider();
+
+        generateToken();
+
+        mNotificationProvider = new NotificationProvider();
+
+        parentId = getIntent().getStringExtra("parentId");
+        childrenName = getIntent().getStringExtra("childrenName").toUpperCase();
+
+        mButtonFindMe = findViewById(R.id.btnComeFindme);
+
+        mButtonFindMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendNotificationComeFindMe();
+            }
+        });
+
     }
+
+    private void sendNotificationComeFindMe() {
+        mTokenProvider.getToken(parentId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String token = dataSnapshot.getValue().toString();
+                    Map<String, String> map = new HashMap<>();
+                    map.put("title", "TU HIJ@ " + childrenName + " SOLICITA QUE VAYAS A BUSCARLO");
+                    map.put("body",
+                            "Hola, desde el equipo de Pegasus te informamos de que tu hij@ " + childrenName + " ha solicitado que vayas a buscarlo, recuerda que puede haber pulsado el botón por equivocación, te aconsejamos que antes de iniciar la ruta te pongas en contacto con el o ella. Gracias por usar Pegasus"
+                    );
+                    map.put("idClient", mAuthProvider.getId());
+
+                    FCMBody fcmBody = new FCMBody(token, "high", map);
+
+                    mNotificationProvider.sendNotification(fcmBody).enqueue(new Callback<FCMResponse>() {
+                        @Override
+                        public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                            if (response.body() != null) {
+                                if (response.body().getSuccess() == 1) {
+                                    Toast.makeText(MapChildrenActivity.this, "La notificación se ha enviado con éxito", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(MapChildrenActivity.this, "No se ha podido enviar la notificación", Toast.LENGTH_SHORT).show();
+                                }
+                            }else {
+                                Toast.makeText(MapChildrenActivity.this, "No se pudo enviar la notificación", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<FCMResponse> call, Throwable t) {
+                            Log.d("Error", "Error " + t.getMessage());
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     private void updateLocation() {
         if (mAuthProvider.existSession() && mCurrentLatLng != null) {
@@ -123,13 +215,11 @@ public class MapChildrenActivity extends AppCompatActivity implements OnMapReady
             }
         }
     }
-
+    @SuppressWarnings("deprecation")
     private void startLocation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 if (gpsActived()) {
-                   /* mButtonConnect.setText("Desconectarse");
-                    mIsConnect = true;*/
                     mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                     mMap.setMyLocationEnabled(true);
                 } else {
@@ -140,7 +230,6 @@ public class MapChildrenActivity extends AppCompatActivity implements OnMapReady
             }
         } else {
             if (gpsActived()) {
-                mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                 mMap.setMyLocationEnabled(true);
             } else {
                 showAlertDialogNOGPS();
@@ -215,7 +304,18 @@ public class MapChildrenActivity extends AppCompatActivity implements OnMapReady
         }
 
         mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build();
-
         startLocation();
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                if (mCurrentLatLng != null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f));
+                }
+            }
+        });
+    }
+
+    void generateToken(){
+        mTokenProvider.create(mAuthProvider.getId());
     }
 }

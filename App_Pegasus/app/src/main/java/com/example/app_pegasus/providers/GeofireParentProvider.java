@@ -1,6 +1,8 @@
 package com.example.app_pegasus.providers;
 
 import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -26,13 +28,18 @@ public class GeofireParentProvider {
         locationRef.child("longitude").setValue(latLng.longitude);
     }
 
-    /*public void removeLocation() {
-        DatabaseReference locationRef = mDatabase.child("location");
+    public void removeLocation(String id) {
+        DatabaseReference locationRef = mDatabase.child(id).child("location");
         locationRef.removeValue();
-    }*/
+    }
+   /* public GeoQuery getChildrenLotacion(LatLng latLng) {
+        GeoQuery geoQuery = mGeofire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude), 10000);
+        geoQuery.removeAllListeners();
+        return geoQuery;
+    }
 }
 
-    /* public GeofireParentProvider () {
+     public GeofireParentProvider () {
         mAuthProvider = new AuthProvider();
         String id= mAuthProvider.getId();
         //String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -49,5 +56,5 @@ public class GeofireParentProvider {
 
    public void removeLocation(String idParent) {
         mGeofire.removeLocation(idParent);
-    }
-}*/
+    }*/
+}
